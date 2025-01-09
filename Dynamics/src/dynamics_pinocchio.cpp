@@ -57,4 +57,14 @@ void MultiBodyDynamicsPinocchio::rnea_interval(
     throw std::runtime_error("rnea_interval not implemented for MultiBodyDynamicsPinocchio!");
 }
 
+void MultiBodyDynamicsPinocchio::Yphi_passive(
+    const VecX& q, 
+    const VecX& q_d, 
+    const VecX& q_aux_d,
+    const VecX& q_dd, 
+    const bool add_gravity
+) {
+    throw std::runtime_error("Yphi_passive not implemented for MultiBodyDynamicsPinocchio!");
+}
+
 }; // namespace robust_controller

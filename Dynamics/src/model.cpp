@@ -129,6 +129,7 @@ model::model(const std::string& urdf_filename,
 model::model(const std::string& urdf_filename,
              const std::string& config_filename) {
     pinocchio::urdf::buildModel(urdf_filename, model_pinocchio);
+    data_pinocchio = pinocchio::Data(model_pinocchio);
 
     NB = model_pinocchio.nv; // number of joints
 

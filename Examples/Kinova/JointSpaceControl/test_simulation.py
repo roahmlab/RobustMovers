@@ -5,6 +5,8 @@ from scipy.integrate import solve_ivp
 import scipy.io
 import pybullet as p
 import time
+import sys
+sys.path.append("/workspaces/kinova_control_docker/src/RobustMovers/build/lib")
 import kinova_controller_robust_nanobind as controller_robust
 import matplotlib.pyplot as plt
 
@@ -26,10 +28,12 @@ def integrate(model, ts_sim, x0, controller, method='RK45'):
         qd, qd_d, qd_dd = desired_trajectory(t)
         
         tau = controller.update(q, v, qd, qd_d, qd_dd)
+        print(tau)
         
         a = pin.aba(
             model, data, q, v, tau
         )
+        print(a)
         
         return np.concatenate([v, a])
     
@@ -96,6 +100,7 @@ if __name__ == "__main__":
     
     # Initialize the PyBullet simulation
     p.connect(p.GUI)
+    # p.connect(p.DIRECT)
     p.setGravity(0, 0, -9.81)
     robot = p.loadURDF(model_path, useFixedBase=True, basePosition=[0,0,0], baseOrientation=[0,0,0,1])
     num_joints = p.getNumJoints(robot)

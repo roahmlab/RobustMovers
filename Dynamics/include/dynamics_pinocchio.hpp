@@ -85,6 +85,15 @@ public:
         const VecX& q_aux_dd,
         const bool add_gravity = true
     ) final override;
+
+    virtual void Yphi_passive(
+        const VecX& q, 
+        const VecX& q_d, 
+        const VecX& q_aux_d,
+        const VecX& q_aux__dd, 
+        const bool add_gravity = true
+    ) override;
+
 };
 
 }; // namespace robust_controller

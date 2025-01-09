@@ -26,7 +26,7 @@ public:
     std::vector<Vec6> a; //!< Acceleration vectors.
     std::vector<Eigen::Matrix<double, 6, 10>> K; //!< Assembly matrices.
     MatX Yfull; //!< Full dynamics regressor matrix.
-    MatX Y; //!< Dynamics regressor matrix.
+    // MatX Y; //!< Dynamics regressor matrix.
     VecX phi_inf; //!< Lower bound of joint positions.
     VecX phi_sup; //!< Upper bound of joint positions.
 
@@ -77,13 +77,13 @@ public:
      * @param q_dd Auxiliary joint acceleration vector.
      * @param add_gravity Flag indicating whether to add gravity effects (default: true).
      */
-    void Yphi_passive(
+    virtual void Yphi_passive(
         const VecX& q, 
         const VecX& q_d, 
         const VecX& q_aux_d,
-        const VecX& q_dd, 
+        const VecX& q_aux_dd, 
         const bool add_gravity = true
-    );
+    ) override;
 
     /**
      * @brief Compute RNEA and update dynamics matrices.

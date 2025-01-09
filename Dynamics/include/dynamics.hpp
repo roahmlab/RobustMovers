@@ -30,6 +30,8 @@ public:
     VecX q_aux_d_copy; //!< Copy of auxiliary joint velocity vector that just has been evaluated.
     VecX q_aux_dd_copy; //!< Copy of auxiliary joint acceleration vector that just has been evaluated.
 
+    MatX Y; 
+
     /**
      * @brief Default constructor.
      */
@@ -131,6 +133,16 @@ public:
         const VecX& q_aux_dd,
         const bool add_gravity = true
     ) = 0;
+
+    virtual void Yphi_passive(
+        const Eigen::VectorXd& q, 
+        const Eigen::VectorXd& q_d, 
+        const Eigen::VectorXd& q_aux_d,
+        const Eigen::VectorXd& q_aux_dd, 
+        const bool add_gravity = true
+    ) = 0;
+
+    
 };
 
 }; // namespace robust_controller
