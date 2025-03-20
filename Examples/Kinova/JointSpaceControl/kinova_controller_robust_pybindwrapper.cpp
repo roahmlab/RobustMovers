@@ -150,9 +150,17 @@ nb::ndarray<nb::numpy, const double> kinova_controller_robust_pybindwrapper::upd
     for (int i = 0; i < modelPtr_->NB; i++) {
         if (tau(i) > TORQUE_LIMITS_UPPER[i] ||
             tau(i) < TORQUE_LIMITS_LOWER[i]) {
-            std::cerr << "motor: " << i << " tau: " << tau(i) << std::endl;
-            std::cerr << "limits: [" << TORQUE_LIMITS_LOWER[i] << ", " << TORQUE_LIMITS_UPPER[i] << "]" << std::endl; 
-            throw std::runtime_error("kinova_controller_robust_pybindwrapper.cpp: update(): torque limits exceeded!");
+            // std::cerr << "motor: " << i << " tau: " << tau(i) << std::endl;
+            // std::cerr << "limits: [" << TORQUE_LIMITS_LOWER[i] << ", " << TORQUE_LIMITS_UPPER[i] << "]" << std::endl; 
+            // throw std::runtime_error("kinova_controller_robust_pybindwrapper.cpp: update(): torque limits exceeded!");
+
+            // clamp tau
+            if (tau(i) > TORQUE_LIMITS_UPPER[i]) {
+                tau(i) = TORQUE_LIMITS_UPPER[i];
+            }
+            else if (tau(i) < TORQUE_LIMITS_LOWER[i]) {
+                tau(i) = TORQUE_LIMITS_LOWER[i];
+            }
         }
     }
 
