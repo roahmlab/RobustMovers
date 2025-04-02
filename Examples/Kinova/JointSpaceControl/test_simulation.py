@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from kinova_dynamics import set_position, integrate
 
 import sys
-sys.path.append('/workspaces/RobustMovers-roahmlab/build/lib') # be careful about the path
+sys.path.append('/workspaces/RobustMovers/build/lib') # be careful about the path
 import kinova_controller_armour_nanobind as controller_armour
 
 # Desired trajectory: a simple sinusoidal trajectory

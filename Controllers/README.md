@@ -7,11 +7,10 @@ graph TD
     A --> B[controller_model]
     A --> C[controller_interval]
     A --> I[controller_PID]
+    B --> K[controller_grav_PID]
     B --> D[controller_passivity]
     B --> E[controller_adaptive]
-    C --> F[controller_althoff]
-    C --> G[controller_armour]
-    C --> H[controller_armour]
+    C --> F[controller_armour]
+    C --> G[controller_althoff]
+    C --> H[controller_robust]
 ```
-
-The structure is the same for operational space controllers.
