@@ -1,6 +1,3 @@
-#ifndef CONTROLLER_CPP
-#define CONTROLLER_CPP
-
 #include "controller_armour.hpp"
 
 namespace robust_controller {
@@ -120,5 +117,3 @@ Eigen::VectorXd controller_armour::update(
 }
 
 }; // namespace robust_controller_armour
-
-#endif // CONTROLLER_CPP

@@ -1,6 +1,3 @@
-#ifndef SPATIAL_CPP
-#define SPATIAL_CPP
-
 #include "spatial.hpp"
 
 namespace robust_controller {
@@ -305,5 +302,3 @@ Mat6 plux(const Mat3& R, const Vec3& p) {
 }
 
 }; // namespace robust_controller
-
-#endif // SPATIAL_CPP

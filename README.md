@@ -83,6 +83,14 @@ You can find complete examples in the `Examples/` directory:
 
 - `Examples/Kinova/JointSpaceControl/`: Joint space control examples for the Kinova Gen3 robot arm
 
+## Authors
+
+[Bohao Zhang](https://cfather.github.io/) (jimzhang@umich.edu): **Current maintainer**, Robust controller implementation in C++.
+
+Jonathan Michaux (jmichaux@umich.edu): Robust controller theory.
+
+Patrick D. Holmes (pdholmes@umich.edu): Robust controller theory.
+
 ## License
 
 **ARMOUR** is released under a [GNU license](https://github.com/roahmlab/RobustMovers/blob/main/LICENSE). 
