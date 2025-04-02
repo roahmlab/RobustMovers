@@ -11,7 +11,7 @@ namespace robust_controller {
  * 
  * This class implements a robust controller for a multi-body dynamics system.
  */
-class controller_robust : public controller {
+class controller_armour : public controller {
 public:
     using VecX = Eigen::VectorXd; //!< Type alias for Eigen dynamic vector.
 
@@ -37,14 +37,14 @@ public:
     /**
      * @brief Default constructor.
      */
-    controller_robust() = default;
+    controller_armour() = default;
 
     /**
      * @brief Constructor with model pointer.
      * 
      * @param modelPtr_in Pointer to the robot model.
      */
-    controller_robust(const std::shared_ptr<model>& modelPtr_in);
+    controller_armour(const std::shared_ptr<model>& modelPtr_in);
 
     /**
      * @brief Constructor with model pointer and parameters.
@@ -52,7 +52,7 @@ public:
      * @param modelPtr_in Pointer to the robot model.
      * @param params_in Controller parameters.
      */
-    controller_robust(
+    controller_armour(
         const std::shared_ptr<model>& modelPtr_in,
         const parameters& params_in
     );
@@ -64,7 +64,7 @@ public:
      * @param params_in Controller parameters.
      * @param phi_eps_in Model uncertainty for each inertial parameter.
      */
-    controller_robust(
+    controller_armour(
         const std::shared_ptr<model>& modelPtr_in,
         const parameters& params_in, 
         const double phi_eps_in
@@ -73,7 +73,7 @@ public:
     /**
      * @brief Destructor.
      */
-    ~controller_robust() = default;
+    ~controller_armour() = default;
 
     /**
      * @brief Update the controller.

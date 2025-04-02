@@ -9,10 +9,9 @@ graph TD
     A --> I[controller_PID]
     B --> D[controller_passivity]
     B --> E[controller_adaptive]
-    B --> J[controller_dirac]
-    C --> F[controller_ultimate]
+    C --> F[controller_althoff]
     C --> G[controller_armour]
-    C --> H[controller_robust]
+    C --> H[controller_armour]
 ```
 
 The structure is the same for operational space controllers.

@@ -1,9 +1,9 @@
-#include "kinova_controller_robust_pybindwrapper.hpp"
+#include "kinova_controller_armour_pybindwrapper.hpp"
 
 namespace robust_controller {
 namespace Kinova {
 
-kinova_controller_robust_pybindwrapper::kinova_controller_robust_pybindwrapper(
+kinova_controller_armour_pybindwrapper::kinova_controller_armour_pybindwrapper(
     const std::string urdf_filename,
     const std::string config_filename,
     const nb_1d_double& Kr,
@@ -15,33 +15,33 @@ kinova_controller_robust_pybindwrapper::kinova_controller_robust_pybindwrapper(
         urdf_filename, config_filename);
     
     if (Kr.size() != modelPtr_->NB) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): Kr size mismatch!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): Kr size mismatch!");
     }
     params.Kr = VecX::Zero(modelPtr_->NB);
     for (int i = 0; i < Kr.size(); i++) {
         if (Kr(i) <= 0) {
-            throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): Kr must be positive!");
+            throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): Kr must be positive!");
         }
 
         params.Kr(i) = Kr(i);
     }
 
     if (V_max <= 0) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): V_max must be positive!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): V_max must be positive!");
     }
     params.V_max = V_max;
 
     if (alpha <= 0) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): alpha must be positive!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): alpha must be positive!");
     }
     params.alpha = alpha;
 
     if (r_norm_threshold < 0) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): r_norm_threshold must be non-negative!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): r_norm_threshold must be non-negative!");
     }
     params.r_norm_threshold = r_norm_threshold;
 
-    controllerPtr_ = std::make_shared<controller_robust>(
+    controllerPtr_ = std::make_shared<controller_armour>(
         modelPtr_, params);
 
     q = VecX::Zero(modelPtr_->NB);
@@ -54,70 +54,70 @@ kinova_controller_robust_pybindwrapper::kinova_controller_robust_pybindwrapper(
     tau = VecX::Zero(modelPtr_->NB);
 }
 
-void kinova_controller_robust_pybindwrapper::reset_model_parameters(const std::string config_filename) {
+void kinova_controller_armour_pybindwrapper::reset_model_parameters(const std::string config_filename) {
     modelPtr_ = std::make_shared<model>(
         urdf_filename_copy, config_filename);
 
-    controllerPtr_ = std::make_shared<controller_robust>(
+    controllerPtr_ = std::make_shared<controller_armour>(
         modelPtr_, params);
 }
 
-void kinova_controller_robust_pybindwrapper::reset_controller_parameters(
+void kinova_controller_armour_pybindwrapper::reset_controller_parameters(
     const nb_1d_double Kr,
     const double V_max,
     const double alpha,
     const double r_norm_threshold) {
     if (Kr.size() != modelPtr_->NB) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): Kr size mismatch!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): Kr size mismatch!");
     }
     params.Kr = VecX::Zero(modelPtr_->NB);
     for (int i = 0; i < Kr.size(); i++) {
         if (Kr(i) <= 0) {
-            throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): Kr must be positive!");
+            throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): Kr must be positive!");
         }
 
         params.Kr(i) = Kr(i);
     }
 
     if (V_max <= 0) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): V_max must be positive!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): V_max must be positive!");
     }
     params.V_max = V_max;
 
     if (alpha <= 0) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): alpha must be positive!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): alpha must be positive!");
     }
     params.alpha = alpha;
 
     if (r_norm_threshold < 0) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: kinova_controller_robust_pybindwrapper(): r_norm_threshold must be non-negative!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: kinova_controller_armour_pybindwrapper(): r_norm_threshold must be non-negative!");
     }
     params.r_norm_threshold = r_norm_threshold;
 
-    controllerPtr_ = std::make_shared<controller_robust>(
+    controllerPtr_ = std::make_shared<controller_armour>(
         modelPtr_, params);
 }
 
-nb::ndarray<nb::numpy, const double> kinova_controller_robust_pybindwrapper::update(
+nb::ndarray<nb::numpy, const double> kinova_controller_armour_pybindwrapper::update(
     const nb_1d_double& q_input,  
     const nb_1d_double& q_d_input, 
     const nb_1d_double& qd_input, 
     const nb_1d_double& qd_d_input, 
     const nb_1d_double& qd_dd_input) {
     if (q_input.size() != modelPtr_->NB) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: update(): q_input size mismatch!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: update(): q_input size mismatch!");
     }
     if (q_d_input.size() != modelPtr_->NB) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: update(): q_d_input size mismatch!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: update(): q_d_input size mismatch!");
     }
     if (qd_input.size() != modelPtr_->NB) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: update(): qd_input size mismatch!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: update(): qd_input size mismatch!");
     }
     if (qd_d_input.size() != modelPtr_->NB) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: update(): qd_d_input size mismatch!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: update(): qd_d_input size mismatch!");
     }
     if (qd_dd_input.size() != modelPtr_->NB) {
-        throw std::invalid_argument("kinova_controller_robust_pybindwrapper.cpp: update(): qd_dd_input size mismatch!");
+        throw std::invalid_argument("kinova_controller_armour_pybindwrapper.cpp: update(): qd_dd_input size mismatch!");
     }
 
     q = VecX::Zero(modelPtr_->NB);
@@ -152,7 +152,7 @@ nb::ndarray<nb::numpy, const double> kinova_controller_robust_pybindwrapper::upd
             tau(i) < TORQUE_LIMITS_LOWER[i]) {
             // std::cerr << "motor: " << i << " tau: " << tau(i) << std::endl;
             // std::cerr << "limits: [" << TORQUE_LIMITS_LOWER[i] << ", " << TORQUE_LIMITS_UPPER[i] << "]" << std::endl; 
-            // throw std::runtime_error("kinova_controller_robust_pybindwrapper.cpp: update(): torque limits exceeded!");
+            // throw std::runtime_error("kinova_controller_armour_pybindwrapper.cpp: update(): torque limits exceeded!");
 
             // clamp tau
             if (tau(i) > TORQUE_LIMITS_UPPER[i]) {

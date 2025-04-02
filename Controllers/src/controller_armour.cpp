@@ -1,27 +1,27 @@
 #ifndef CONTROLLER_CPP
 #define CONTROLLER_CPP
 
-#include "controller_robust.hpp"
+#include "controller_armour.hpp"
 
 namespace robust_controller {
 
-controller_robust::controller_robust(const std::shared_ptr<model>& modelPtr_in) {
+controller_armour::controller_armour(const std::shared_ptr<model>& modelPtr_in) {
     mbdPtr_ = std::make_shared<MultiBodyDynamicsYphi>(modelPtr_in);
     params.Kr = 5 * Eigen::VectorXd::Ones(NB);
 }
 
-controller_robust::controller_robust(
+controller_armour::controller_armour(
     const std::shared_ptr<model>& modelPtr_in,
     const parameters& params_in) :
     params(params_in) {
     mbdPtr_ = std::make_shared<MultiBodyDynamicsYphi>(modelPtr_in);
     NB = modelPtr_in->NB;
     if (params.Kr.size() != NB) {
-        throw std::invalid_argument("controller_robust.cpp: controller_robust(): Kr size mismatch!");
+        throw std::invalid_argument("controller_armour.cpp: controller_armour(): Kr size mismatch!");
     }
 }
 
-controller_robust::controller_robust(
+controller_armour::controller_armour(
     const std::shared_ptr<model>& modelPtr_in,
     const parameters& params_in, 
     const double phi_eps_in) :
@@ -30,11 +30,11 @@ controller_robust::controller_robust(
     NB = modelPtr_in->NB;
 
     if (params.Kr.size() != NB) {
-        throw std::invalid_argument("controller_robust.cpp: controller_robust(): Kr size mismatch!");
+        throw std::invalid_argument("controller_armour.cpp: controller_armour(): Kr size mismatch!");
     }
 }
 
-Eigen::VectorXd controller_robust::update(
+Eigen::VectorXd controller_armour::update(
     const VecX& q,  
     const VecX& q_d, 
     const VecX& qd, 
@@ -81,7 +81,7 @@ Eigen::VectorXd controller_robust::update(
     // sanity check for size since constrained system might be involved
     if (mbdPtr_->tau.size() != mbdPtr_->tau_sup.size() || 
         mbdPtr_->tau.size() != mbdPtr_->tau_inf.size()) {
-        throw std::runtime_error("controller_robust.cpp: update(): Size mismatch in nominal torque and interval torque!");
+        throw std::runtime_error("controller_armour.cpp: update(): Size mismatch in nominal torque and interval torque!");
     }
 
     // Interval check
@@ -90,7 +90,7 @@ Eigen::VectorXd controller_robust::update(
             std::cerr << "tau: "     << mbdPtr_->tau(i)     << std::endl;
             std::cerr << "tau_sup: " << mbdPtr_->tau_sup(i) << std::endl;
             std::cerr << "tau_inf: " << mbdPtr_->tau_inf(i) << std::endl;
-            throw std::runtime_error("controller_robust.cpp: update(): Nominal torque output falls outside interval output!");
+            throw std::runtime_error("controller_armour.cpp: update(): Nominal torque output falls outside interval output!");
         }
     }
 
@@ -119,6 +119,6 @@ Eigen::VectorXd controller_robust::update(
     return  mbdPtr_->tau + v;
 }
 
-}; // namespace robust_controller_robust
+}; // namespace robust_controller_armour
 
 #endif // CONTROLLER_CPP

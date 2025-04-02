@@ -11,7 +11,7 @@ from kinova_dynamics import set_position, integrate
 
 import sys
 sys.path.append('/workspaces/RobustMovers-roahmlab/build/lib') # be careful about the path
-import kinova_controller_robust_nanobind as controller_robust
+import kinova_controller_armour_nanobind as controller_armour
 
 # Desired trajectory: a simple sinusoidal trajectory
 def desired_trajectory(t):
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     V_max = 1e-2
     alpha = 20
     r_norm_threshold = 1e-10
-    controller = controller_robust.kinova_controller_robust_pybindwrapper(
+    controller = controller_armour.kinova_controller_armour_pybindwrapper(
         model_path, config_path, Kr, V_max, alpha, r_norm_threshold
     )
     

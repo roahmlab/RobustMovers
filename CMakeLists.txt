@@ -89,7 +89,7 @@ include_directories(Dynamics/include)
 # Compile controllers library
 add_library(conlib SHARED
     Controllers/src/controller_passive.cpp
-    Controllers/src/controller_robust.cpp)
+    Controllers/src/controller_armour.cpp)
 
 target_include_directories(conlib PUBLIC
     Controllers/include)
