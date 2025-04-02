@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+*.pyc
 
 # Compiled Object files
 *.slo
@@ -44,4 +45,3 @@ build/
 backup/
 
 *.png
-*.txt

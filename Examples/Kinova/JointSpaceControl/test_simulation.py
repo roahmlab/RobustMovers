@@ -5,54 +5,29 @@ from scipy.integrate import solve_ivp
 import scipy.io
 import pybullet as p
 import time
-import kinova_controller_robust_nanobind as controller_robust
 import matplotlib.pyplot as plt
 
+from kinova_dynamics import set_position, integrate
+
+import sys
+sys.path.append('/workspaces/RobustMovers-roahmlab/build/lib') # be careful about the path
+import kinova_controller_robust_nanobind as controller_robust
+
+# Desired trajectory: a simple sinusoidal trajectory
 def desired_trajectory(t):
     qd = np.sin(t) * np.ones(7)
     qd_d = np.cos(t) * np.ones(7)
     qd_dd = -np.sin(t) * np.ones(7)
     return qd, qd_d, qd_dd
 
-def integrate(model, ts_sim, x0, controller, method='RK45'):
-    nq = model.nq
-    nv = model.nv
-    data = model.createData()
-
-    def dynamics(t, x):
-        q = x[:nq]
-        v = x[nq:]
-        
-        qd, qd_d, qd_dd = desired_trajectory(t)
-        
-        tau = controller.update(q, v, qd, qd_d, qd_dd)
-        
-        a = pin.aba(
-            model, data, q, v, tau
-        )
-        
-        return np.concatenate([v, a])
-    
-    sol = solve_ivp(
-        dynamics, 
-        [ts_sim[0], ts_sim[-1]],
-        x0, 
-        method=method,
-        t_eval=ts_sim
-    )
-    
-    position = sol.y[:nq,:].T
-    velocity = sol.y[nq:,:].T
-    
-    return position, velocity
-
 # Kinova URDF model
 model_path = "../../../Robots/kinova-gen3/kinova.urdf"
 config_path = "../kinova_model_parameters.yaml"
 
-mass_model_uncertainty = 0.05
-com_model_uncertainty = 0.05
-inertia_model_uncertainty = 0.05
+# Ratio of uncertainties in the inertial parameters
+mass_model_uncertainty = 0.05 # 5%
+com_model_uncertainty = 0.05 # 5%
+inertia_model_uncertainty = 0.05 # 5%
 
 if __name__ == "__main__":
     # Load the URDF model
@@ -76,14 +51,14 @@ if __name__ == "__main__":
         model_path, config_path, Kr, V_max, alpha, r_norm_threshold
     )
     
-    # Set the initial condition
+    # Set the initial condition (to be aligned with the beginning of the desired trajectory)
     q0, v0, _ = desired_trajectory(0)
 
-    # Set the simulation time
+    # Set the simulation time (4 seconds, 1000 steps for visualization)
     ts_sim = np.linspace(0, 4, 1000)
 
     # Integrate the dynamics using pinocchio
-    pos, vel = integrate(model, ts_sim, np.concatenate([q0, v0]), controller)
+    pos, vel, tau = integrate(model, ts_sim, np.concatenate([q0, v0]), desired_trajectory, controller)
     
     # Recover the desired trajectory
     desired_pos = np.zeros((len(ts_sim), 7))
@@ -102,20 +77,13 @@ if __name__ == "__main__":
     
     # Playback the simulation
     for q in pos:
-        id = 0
-        for i in range(num_joints):
-            joint_info = p.getJointInfo(robot, i)
-            joint_type = joint_info[2]
-            if joint_type == p.JOINT_FIXED:
-                p.resetJointState(robot, i, targetValue=0)
-            else:
-                p.resetJointState(robot, i, targetValue=q[id])
-                id += 1
+        set_position(robot, q)
         time.sleep(0.01)
         
     input("Press Enter to continue...")
     p.disconnect()
     
+    # Plot the tracking error
     plt.figure()
     for i in range(7):
         plt.subplot(2, 4, i+1)
@@ -125,5 +93,13 @@ if __name__ == "__main__":
         plt.legend()
     plt.savefig("tracking_error.png")
     
-    
+    # Plot the control input
+    plt.figure()
+    for i in range(7):
+        plt.subplot(2, 4, i+1)
+        plt.plot(ts_sim, tau[:,i], label=f"Joint {i}")
+        plt.xlabel("Time [s]")
+        plt.ylabel("Control input [Nm]")
+        plt.legend()
+    plt.savefig("control_input.png")
 
