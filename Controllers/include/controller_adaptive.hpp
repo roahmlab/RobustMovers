@@ -4,8 +4,6 @@
 #include "controller.hpp"
 #include "dynamics_Yphi.hpp"
 
-// #include "kinova_constants.hpp"
-
 namespace robust_controller {
 
 class controller_adaptive : public controller {
@@ -14,7 +12,7 @@ public:
 
     // Control parameters structure
     struct parameters {
-        Eigen::VectorXd Kd;          // Derivative gain
+        Eigen::VectorXd Kd;         // Derivative gain
         Eigen::MatrixXd Gamma;      // Adaptation gain (PSD matrix)
         Eigen::VectorXd Kr;         // Reference gain
         double dt;                  // Time step

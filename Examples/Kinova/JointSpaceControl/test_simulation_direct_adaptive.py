@@ -6,8 +6,8 @@ import scipy.io
 import pybullet as p
 import time
 import sys
-sys.path.append("/workspaces/kinova_control_docker/src/RobustMovers/build/lib")
-import kinova_controller_adaptive_nanobind as controller_adaptive
+sys.path.append("/workspaces/RobustMovers-roahmlab/build/lib")
+import kinova_controller_direct_adaptive_nanobind as controller_adaptive
 import matplotlib.pyplot as plt
 
 def desired_trajectory(t):
@@ -22,6 +22,7 @@ def integrate(model, ts_sim, x0, controller, method='RK45'):
     data = model.createData()
     tau_data = []
     def dynamics(t, x):
+        print(t)
         q = x[:nq]
         v = x[nq:]
         
@@ -52,10 +53,8 @@ def integrate(model, ts_sim, x0, controller, method='RK45'):
     return position, velocity, tau_data
 
 # Kinova URDF model
-# model_path = "../../../Robots/kinova-gen3/kinova.urdf"
-model_path = "/workspaces/kinova_control_docker/src/RobustMovers/Robots/kinova-gen3/kinova.urdf"
-# config_path = "../kinova_model_parameters.yaml"
-config_path = "/workspaces/kinova_control_docker/src/RobustMovers/Examples/Kinova/kinova_model_parameters.yaml"
+model_path = "../../../Robots/kinova-gen3/kinova.urdf"
+config_path = "../kinova_model_parameters.yaml"
 
 mass_model_uncertainty = 0.1
 com_model_uncertainty = 0.05
@@ -92,21 +91,22 @@ if __name__ == "__main__":
         Pybullet_parameters_change.append(params)
     
     print("pybullet END Parameters:", Pybullet_parameters_change[-1])
-
     
     # # Controller parameters
-    Kr = 5* np.ones(model.nv)
-    Kd= 5* np.ones(model.nv)
-    gamma = np.array([1e0, 1e-3, 1e-3, 1e-3, 1e-5, 1e-5, 1e-5, 1e-5, 1e-5, 1e-5]) # gain inside each joint
+    Kr = 5 * np.ones(model.nv)
+    Kd = 5 * np.ones(model.nv)
+    beta = 0.0 # 1.2
+    delta = 100
+    eta = 20
+    alpha = 0.4
     dt = 0.001
-    controller = controller_adaptive.kinova_controller_adaptive_pybindwrapper(
-        model_path, config_path, Kd, Kr, gamma, dt 
+    controller = controller_adaptive.kinova_controller_direct_adaptive_pybindwrapper(
+        model_path, config_path, Kd, Kr, beta, delta, eta, alpha, dt 
     )
     parameters_raw = controller.get_parameters()
     
     # Set the initial condition
     q0, v0, _ = desired_trajectory(0)
-
 
     # Set the simulation time
     ts_sim = np.linspace(0, 1, 1000)
@@ -171,6 +171,8 @@ if __name__ == "__main__":
     print("full_parameters_raw", parameters_raw[-10:])
     print("pybullet END Parameters:", Pybullet_parameters_change[-1])
 
+    
+    
     times = [t for t, _ in tau_data]
     tau_values = np.array([tau for _, tau in tau_data])  
 

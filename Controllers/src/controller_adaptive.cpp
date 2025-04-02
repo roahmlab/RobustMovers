@@ -22,7 +22,6 @@ controller_adaptive::controller_adaptive(
     NB = modelPtr_in->NB;
 
     if (params.Kr.size() != NB ||
-        // params.Kd.size() != NB ||
         params.Gamma.rows() != 10 * NB || params.Gamma.cols() != 10 * NB || !isPSD(params.Gamma)) {
         throw std::invalid_argument("controller_adaptive.cpp: Kr or Kd or Gamma size mismatch!");
     }
@@ -51,7 +50,6 @@ Eigen::VectorXd controller_adaptive::update(
     // Step 4: PD feedback control
     Eigen::VectorXd tau_feedback = params.Kd.cwiseProduct(s);
     
-
     // Step 5: Adaptive parameter update
     Eigen::MatrixXd Y_end = mbdPtr_->Y.rightCols(10); // End parameters
 
@@ -73,25 +71,17 @@ Eigen::VectorXd controller_adaptive::update(
 
     // Step 7: Compute total torque
     Eigen::VectorXd total_tau = tau_feedforward + tau_feedback + tau_uncertainty;
-
-    // if total tau bigger than the limits, throw an exception
-    // if( total_tau.maxCoeff() > 1000|| total_tau.minCoeff() < -1000){
-    //     throw std::runtime_error("controller_adaptive.cpp: update(): torque limits exceeded!");
-    // }
-    // if(total_tau.hasNaN()){
-    //     throw std::runtime_error("controller_adaptive.cpp: update(): NaN in total_tau!");
-    // }
-
+    
     return total_tau;
 }
 
 bool controller_adaptive::isPSD(const Eigen::MatrixXd& M) {
-    if( M != M.transpose() ){
+    if(M != M.transpose()){
         throw std::invalid_argument("Matrix is not symmetric");
         return false;
     }
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(M);
-    if(es.eigenvalues().minCoeff() <= 0){
+    if (es.eigenvalues().minCoeff() <= 0){
         throw std::invalid_argument("Matrix is not positive definite");
         return false;
     }
