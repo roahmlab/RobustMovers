@@ -48,7 +48,7 @@ if __name__ == "__main__":
     alpha = 20
     r_norm_threshold = 1e-10
     controller = controller_armour.kinova_controller_armour_pybindwrapper(
-        model_path, config_path, Kr, V_max, alpha, r_norm_threshold
+        model_path, config_path, Kr, V_max, alpha, r_norm_threshold, "ignore"
     )
     
     # Set the initial condition (to be aligned with the beginning of the desired trajectory)
