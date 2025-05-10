@@ -104,6 +104,18 @@ public:
         const nb_1d_double& qd_input, 
         const nb_1d_double& qd_d_input, 
         const nb_1d_double& qd_dd_input);
+
+    /**
+     * @brief Compute the torque given current trajectory and desired trajectory.
+     * 
+     * @return A tuple containing the torque and the robust control input.
+     */
+    nb::tuple update_with_more_details(
+        const nb_1d_double& q_input,  
+        const nb_1d_double& q_d_input, 
+        const nb_1d_double& qd_input, 
+        const nb_1d_double& qd_d_input, 
+        const nb_1d_double& qd_dd_input);
 };
 
 }; // namespace Kinova

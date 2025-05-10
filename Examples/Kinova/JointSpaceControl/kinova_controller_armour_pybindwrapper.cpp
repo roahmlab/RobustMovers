@@ -186,5 +186,23 @@ nb::ndarray<nb::numpy, const double> kinova_controller_armour_pybindwrapper::upd
     return control;
 }
 
+nb::tuple kinova_controller_armour_pybindwrapper::update_with_more_details(
+    const nb_1d_double& q_input,  
+    const nb_1d_double& q_d_input, 
+    const nb_1d_double& qd_input, 
+    const nb_1d_double& qd_d_input, 
+    const nb_1d_double& qd_dd_input) {
+    update(q_input, q_d_input, qd_input, qd_d_input, qd_dd_input);
+    
+    const size_t shape_ptr[] = {modelPtr_->NB};
+    auto nominal_torque = nb::ndarray<nb::numpy, const double>(
+        controllerPtr_->mbdPtr_->tau.data(), 1, shape_ptr, nb::handle());
+
+    auto robust_torque = nb::ndarray<nb::numpy, const double>(
+        controllerPtr_->v.data(), 1, shape_ptr, nb::handle());
+
+    return nb::make_tuple(nominal_torque, robust_torque);
+}
+
 }; // namespace Kinova
 }; // namespace robust_controller

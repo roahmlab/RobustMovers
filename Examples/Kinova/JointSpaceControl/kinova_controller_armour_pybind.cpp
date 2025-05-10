@@ -19,5 +19,6 @@ NB_MODULE(kinova_controller_armour_nanobind, m) {
             >())
         .def("reset_model_parameters", &kinova_controller_armour_pybindwrapper::reset_model_parameters)
         .def("reset_controller_parameters", &kinova_controller_armour_pybindwrapper::reset_controller_parameters)
-        .def("update", &kinova_controller_armour_pybindwrapper::update);
+        .def("update", &kinova_controller_armour_pybindwrapper::update)
+        .def("update_with_more_details", &kinova_controller_armour_pybindwrapper::update_with_more_details);
 }
