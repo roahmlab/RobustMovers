@@ -16,6 +16,12 @@ namespace Kinova {
 
 namespace nb = nanobind;
 
+enum class EXCEED_TORQUE_ACTION {
+    CLAMP,
+    IGNORE,
+    ERROR
+};
+
 /**
  * @brief Class representing a Python wrapper for interfacing to Kinova controller.
  * 
@@ -48,6 +54,8 @@ public:
     VecX qd_dd; //!< Desired joint acceleration.
     VecX tau; //!< Joint torque.
 
+    EXCEED_TORQUE_ACTION exceed_torque_action_; //!< Action to take if torque exceeds limit.
+
     // Constructor
     /**
      * @brief Default constructor.
@@ -63,7 +71,8 @@ public:
         const nb_1d_double& Kr,
         const double V_max,
         const double alpha,
-        const double r_norm_threshold);
+        const double r_norm_threshold,
+        const std::string exceed_torque_action);
 
     // Destructor
     /**
