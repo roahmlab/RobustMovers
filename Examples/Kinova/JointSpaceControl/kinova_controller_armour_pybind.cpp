@@ -14,7 +14,8 @@ NB_MODULE(kinova_controller_armour_nanobind, m) {
         .def(nb::init<
             const std::string, const std::string, 
             const kinova_controller_armour_pybindwrapper::nb_1d_double&, 
-            const double, const double, const double
+            const double, const double, const double,
+            const std::string
             >())
         .def("reset_model_parameters", &kinova_controller_armour_pybindwrapper::reset_model_parameters)
         .def("reset_controller_parameters", &kinova_controller_armour_pybindwrapper::reset_controller_parameters)
